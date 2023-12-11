@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+// import other page in 
+import 'page_loy.dart';
 
 void main() {
   runApp(
@@ -14,11 +16,70 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int _currentIndex = 0;
+  TextEditingController con_username = TextEditingController();
+  TextEditingController con_dob = TextEditingController();
+  TextEditingController con_phone_number = TextEditingController();
+  bool validate_username = false;
+  bool validate_dob = false;
+  bool validate_phone_number = false;
+  
+  bool validate_data() {
+    bool result = false;
+    var username = con_username.text;
+    var dob = con_dob.text;
+    var phoneNumber = con_phone_number.text;
+    if(username.isEmpty){
+      setState(() {
+        validate_username = true;
+        result = false;
+      });
+    }
+    else{
+      setState(() {
+        validate_username = false;
+        result = true;
+      });
+    }
+    if(dob.isEmpty){
+      setState(() {
+        validate_dob = true;
+        result = false;
+      });
+    }
+    else{
+      setState(() {
+        validate_dob = false;
+        result = true;
+      });
+    }
+    if(phoneNumber.isEmpty){
+      setState(() {
+        validate_phone_number = true;
+        result = false;
+      });
+    }
+    else{
+      setState(() {
+        validate_phone_number = false;
+        result = true;
+      });
+    }
+    return result;
+  }
+
+  void msg(){
+    final snackbar = SnackBar(content:
+    Text("Hello : " + con_username.text +
+        "Date of Birth:" + con_dob.text +
+        "Phone Number:" + con_phone_number.text));
+    ScaffoldMessenger.of(context).showSnackBar(snackbar);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Mony Ho"),
+        title: Text("Sakal Samnang Form"),
         backgroundColor: Colors.green,
       ),
       drawer: Drawer(
@@ -65,8 +126,9 @@ class _MainPageState extends State<MainPage> {
       ),
       body: ListView(
         children: [
-          _cardComponent('My Phone', 'Desc 1', '15', 'images/2.png'),
-          _cardComponent('Err Bos Nh', 'Desc 2', '100', 'images/3.png'),
+          // _cardComponent('My Phone', 'Desc 1', '15', 'images/2.png'),
+          // _cardComponent('Err Bos Nh', 'Desc 2', '100', 'images/3.png'),
+          textComponent(),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -99,6 +161,98 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
+  Widget textComponent() {
+    return Padding(
+        padding: EdgeInsets.all(15),
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.all(15),
+              child: Row(
+                children: [
+                  Icon(Icons.person),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: TextField(
+                      controller: con_username,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Fullname',
+                        hintText: 'Enter Your Name',
+                        errorText: validate_username ? "Input Phone Number" : null,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(15),
+              child: Row(
+                children: [
+                  Icon(Icons.lock),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: TextField(
+                      controller: con_dob,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Date of Birth',
+                        hintText: 'Enter your date of birth here',
+                        errorText: validate_dob ? "Input DOB" : null,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(15),
+              child: Row(
+                children: [
+                  Icon(Icons.phone),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: TextField(
+                      controller: con_phone_number,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Phone number',
+                        hintText: 'Enter phone number',
+                        errorText: validate_phone_number ? "Input Phone Number" : null,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            ElevatedButton(
+              child: Text('Sign In'),
+              
+              onPressed: () {
+                // create navigate action to other page
+                validate_data() ? msg() : null;
+                if (validate_data() == true) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoyPage()),
+                  );
+                }
+                // final snackbar = SnackBar(
+                //     content: Text("Hello : " +
+                //         con_username.text +
+                //         " Your password :" +
+                //         con_password.text));
+                // ScaffoldMessenger.of(context).showSnackBar(snackbar);
+              },
+              
+            )
+          ],
+        ));
+  }
+
   Widget _buildRow(String title, IconData iconData) {
     return Padding(
       padding: const EdgeInsets.all(12.0),
@@ -109,7 +263,7 @@ class _MainPageState extends State<MainPage> {
         ),
         child: Row(
           children: [
-            Icon( 
+            Icon(
               iconData,
               size: 30,
               color: Colors.green, // Replace with your desired color
@@ -123,69 +277,6 @@ class _MainPageState extends State<MainPage> {
                   child: Text(
                     title,
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _cardComponent(
-      String title, String subtitle, String description, String imagePath) {
-    return Padding(
-      padding: const EdgeInsets.all(12.0),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8.0),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.green,
-              spreadRadius: 1,
-              blurRadius: 0,
-              offset: const Offset(0, 1),
-            ),
-          ],
-          border: Border.all(color: Colors.grey),
-          color: Colors.white,
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 50,
-              height: 80,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: AssetImage(imagePath),
-                ),
-              ),
-            ),
-            const SizedBox(width: 16),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 4.0),
-                  child: Text(
-                    title,
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 4.0),
-                  child: Text(
-                    subtitle,
-                    style: TextStyle(fontSize: 14, color: Colors.black),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 4.0),
-                  child: Text(
-                    '\$ $description',
-                    style: TextStyle(fontSize: 14),
                   ),
                 ),
               ],
